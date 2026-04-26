@@ -62,40 +62,7 @@ A solução é construída sobre a infraestrutura **AWS**, utilizando modelos de
 
 ### Diagrama de Arquitetura
 
-```mermaid
-graph TD
-    User[Usuário / Médico] -->|Upload PDF| API[API Gateway]
-    User <-->|Consulta Chat/Dash| API
-    
-    subgraph "Segurança (Data Vault)"
-        API --> LambdaAnon[Lambda: Anonimizador]
-        LambdaAnon -->|Salva PII| Vault[(DynamoDB KMS)]
-        LambdaAnon -->|Salva PDF Anonimizado| S3[Amazon S3]
-    end
-
-    subgraph "Pipeline de Dados (ETL)"
-        S3 --> Textract[AWS Textract]
-        Textract --> Parser[Lambda: Estruturador JSON]
-        Parser --> Embeddings[Amazon Titan Embeddings]
-        Embeddings --> Vetorial[(Amazon OpenSearch Serverless)]
-    end
-
-    subgraph "Inteligência (LangGraph + Bedrock)"
-        API --> Router[Agente Supervisor]
-        Router -->|Assunto: Pele/Aging| AgentSkin[Agente Skin & Aging]
-        Router -->|Assunto: Fit/Nutri| AgentFit[Agente Fit & Nutri]
-        Router -->|Assunto: Doenças/Riscos| AgentRisk[Agente de Riscos]
-        
-        AgentSkin & AgentFit & AgentRisk -->|Busca Contexto| Vetorial
-        AgentSkin & AgentFit & AgentRisk -->|Inference| LLM[Llama 3 via Amazon Bedrock]
-    end
-
-    LLM --> ReID[Lambda: Re-identificação]
-    ReID -->|Busca Nome/Info| Vault
-    ReID -->|Resposta Completa| API
-```
-
-
+<img src="assets/hld.png" alt="High Level Design">
 
 ## 📊 Estrutura de Dados (Exemplo JSON)
 Abaixo, um exemplo de como os dados extraídos dos PDFs (como o Genera Skin e Fit) são estruturados para consulta da IA:
