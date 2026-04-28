@@ -26,7 +26,8 @@ O projeto visa resolver o gargalo de interpretação de dados genéticos do prod
 
 Nossa solução propõe uma camada de inteligência baseada em **RAG (Retrieval-Augmented Generation)** que transforma esses documentos não estruturados em uma base de conhecimento consultável. Através de um Dashboard interativo aliado a um assistente conversacional (chatbot), o usuário pode "conversar" com seu DNA, recebendo explicações em linguagem simples, recomendações personalizadas e visualizações intuitivas de riscos e predisposições.
 
-## 🎯 Contexto do Problema e Solução
+## 📺 Apresentação do Projeto
+Assista ao vídeo de entrega da Sprint 1: [Link para o YouTube](https://youtu.be/mASJnbO3dqo)
 
 ### O Problema
 O volume de dados gerado por um mapeamento genético é massivo. Informações sobre ancestralidade, farmacogenética (Farma), nutrição (Nutri), performance física (Fit) e riscos de doenças graves (Aging/Doenças Genéticas) ficam isoladas em silos de texto técnico. Isso gera:
