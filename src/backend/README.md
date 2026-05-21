@@ -60,9 +60,9 @@ uvicorn main:app --reload
 
 ```
 
-A API ficará disponível em: `http://127.0.0.1:8000`
+A API ficará disponível em: `http://localhost:8000`
 
-A documentação interativa do Swagger poderá ser acessada em: `http://127.0.0.1:8000/docs`
+A documentação interativa do Swagger poderá ser acessada em: `http://localhost:8000/docs`
 
 ## 🔌 Contrato de API Estabelecido
 
