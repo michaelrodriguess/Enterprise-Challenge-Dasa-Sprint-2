@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import chat
@@ -8,6 +9,8 @@ app = FastAPI(
     version="0.2.0"
 )
 
+os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,10 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Acopla os roteadores
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat Conversacional"])
 
-# Rota básica de health check
 @app.get("/health", tags=["Monitoramento"])
 def health_check():
     return {"status": "ok", "message": "A API Genera Intelligence está no ar!"}

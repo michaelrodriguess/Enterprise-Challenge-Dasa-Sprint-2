@@ -7,7 +7,6 @@ from langchain_community.vectorstores import FAISS
 
 load_dotenv()
 
-# Mapeamento de pastas
 CURRENT_DIR = Path(__file__).parent
 BACKEND_DIR = CURRENT_DIR.parent
 FAISS_INDEX_PATH = BACKEND_DIR / "faiss_index"
@@ -20,7 +19,6 @@ def testar_busca_semantica():
     )
     
     print(f"2. Carregando o banco vetorial de: {FAISS_INDEX_PATH}")
-    # Nota de Arquitetura: O allow_dangerous_deserialization=True é obrigatório no LangChain
     # para carregar arquivos .pkl locais. É seguro porque nós mesmos geramos o arquivo.
     vector_store = FAISS.load_local(
         str(FAISS_INDEX_PATH), 
