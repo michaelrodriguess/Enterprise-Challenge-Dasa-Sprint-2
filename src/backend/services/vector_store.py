@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from langchain_aws import BedrockEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
@@ -16,9 +16,6 @@ JSON_PATH = PROJECT_ROOT / "proposta_estrutura_de_dados.json"
 FAISS_INDEX_PATH = BACKEND_DIR / "faiss_index"
 
 def carregar_dados_json() -> list[Document]:
-    """
-    Lê o JSON simulado na raiz do projeto e converte os marcadores em Documentos do LangChain.
-    """
     print(f"Lendo dados de: {JSON_PATH}")
     
     with open(JSON_PATH, "r", encoding="utf-8") as f:
@@ -31,14 +28,12 @@ def carregar_dados_json() -> list[Document]:
         nome_painel = painel.get("nome_painel")
         
         for resultado in painel.get("resultados", []):
-            # O 'page_content' é o que o RAG vai buscar por similaridade semântica
             conteudo_texto = (
                 f"Característica: {resultado['caracteristica']}. "
                 f"Conclusão: {resultado['conclusao_curta']}. "
                 f"Explicação: {resultado['explicacao_detalhada']}"
             )
             
-            # Os metadados são essenciais para devolver as "Fontes" pro Front-end
             metadados = {
                 "paciente_id": paciente_id,
                 "painel": nome_painel,
@@ -54,28 +49,26 @@ def carregar_dados_json() -> list[Document]:
     return documentos
 
 def criar_e_salvar_banco_vetorial():
-    """
-    Gera os embeddings via AWS Bedrock e salva o índice FAISS localmente.
-    """
     documentos = carregar_dados_json()
     
     if not documentos:
-        print("Nenhum documento encontrado. Verifique o JSON.")
+        print("Nenhum documento encontrado.")
         return
 
-    print("Conectando ao Amazon Bedrock para gerar Embeddings...")
-    embeddings = BedrockEmbeddings(
-        model_id=os.getenv("EMBEDDING_MODEL_ID", "amazon.titan-embed-text-v1"),
-        region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+    print("Conectando ao Google AI Studio (Gemini) para gerar Embeddings...")
+    
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/gemini-embedding-001",
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        task_type="RETRIEVAL_DOCUMENT"
     )
     
-    print("Gerando vetores e criando o banco FAISS. Isso pode levar alguns segundos...")
+    print("Gerando vetores e criando o banco FAISS...")
     vector_store = FAISS.from_documents(documentos, embeddings)
     
     print(f"Salvando banco vetorial em: {FAISS_INDEX_PATH}")
     vector_store.save_local(str(FAISS_INDEX_PATH))
     print("✅ Ingestão finalizada com sucesso! Banco Vetorial pronto para uso.")
 
-# Permite rodar este arquivo diretamente no terminal para popular o banco
 if __name__ == "__main__":
     criar_e_salvar_banco_vetorial()
